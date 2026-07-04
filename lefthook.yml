@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  stage_fixed: true
+  commands:
+    lint_ts:
+      glob: "src/**/*.{js,jsx,ts,tsx}"
+      run: npx prettier --write --loglevel=warn {staged_files} && npx eslint --fix --quiet {staged_files}
+    lint_css:
+      glob: "src/**/*.{css,less,sass,scss}"
+      run: npx stylelint --fix --quiet {staged_files}
+    lint_misc:
+      glob: "src/**/*.{html,json,gql,graphql}"
+      run: npx prettier --write --loglevel=error {staged_files}
