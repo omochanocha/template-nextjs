@@ -210,7 +210,7 @@ run: npx prettier --write --log-level=warn {staged_files} && ...
 **発生シナリオ**  
 `lint_ts`（prettier+eslint 完了）と `lint_css`（stylelint 完了）がほぼ同時に終わると、2つめの `git add` が `fatal: Unable to create .git/index.lock: File exists` で失敗し、一部の自動修正が unstaged のままコミットがブロックされる。
 
-**推奨修正の選択肢**
+#### 推奨修正の選択肢
 
 - `parallel: false` にしてシーケンシャル実行にする（簡単・確実）
 - `stage_fixed` を hook レベルから外し、各コマンドレベルで個別管理する
@@ -254,7 +254,16 @@ groups: [
 `eslint-config-next` が将来 `eslint-plugin-import-x`（プラグインキー `'import-x'`）に移行した場合、3ルールが全て `Definition for rule 'import/first' was not found` エラーになる。
 
 **推奨修正**  
-`eslint-plugin-import` を devDependencies に戻して `importConfig.plugins` に明示登録するか、3ルールを nextCoreWebVitals に委ねて自前宣言を削除する。
+`nextCoreWebVitals` がすでに `'import'` キーでプラグインを登録しているため、`importConfig.plugins` への再登録は `Cannot redefine plugin "import"` エラーになり不可。`importConfig` の3ルール直前に依存の由来と `eslint-config-next` 更新時の確認事項をコメントで明示する（案A）:
+
+```js
+// import プラグインは nextCoreWebVitals が 'import' キーで登録済み。
+// flat config では同キーの二重登録が禁止されるため自前登録は不可。
+// eslint-config-next が import-x へ移行した際はキー名の変更確認が必要。
+'import/first': 'error',
+'import/newline-after-import': 'error',
+'import/no-duplicates': 'error',
+```
 
 ---
 
