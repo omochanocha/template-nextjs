@@ -21,6 +21,8 @@ const typeConfig = {
   },
   rules: {
     'no-var': 'error',
+    'no-console': 'warn',
+    complexity: ['warn', { max: 10 }],
     'sort-imports': 0,
     '@typescript-eslint/explicit-module-boundary-types': 'warn',
     '@typescript-eslint/no-misused-promises': 'warn',
@@ -31,6 +33,15 @@ const typeConfig = {
       {
         prefer: 'type-imports',
         fixStyle: 'inline-type-imports',
+      },
+    ],
+    '@typescript-eslint/no-magic-numbers': [
+      'warn',
+      {
+        ignore: [-1, 0, 1],
+        ignoreEnums: true,
+        ignoreReadonlyClassProperties: true,
+        ignoreTypeIndexes: true,
       },
     ],
   },
