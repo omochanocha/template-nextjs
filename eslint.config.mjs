@@ -1,11 +1,13 @@
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
-import tseslint from 'typescript-eslint';
-import stylistic from '@stylistic/eslint-plugin';
-import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import tailwindcss from 'eslint-plugin-tailwindcss';
-import unusedImports from 'eslint-plugin-unused-imports';
-import prettier from 'eslint-config-prettier';
+import tsEsLint from 'typescript-eslint';
+import js from '@eslint/js';
+import pluginJsxA11y from 'eslint-plugin-jsx-a11y';
+import pluginStylistic from '@stylistic/eslint-plugin';
+import pluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
+import pluginTailwindcss from 'eslint-plugin-tailwindcss';
+import pluginUnusedImports from 'eslint-plugin-unused-imports';
+import configPrettier from 'eslint-config-prettier';
 import { defineConfig } from 'eslint/config';
 
 const typeConfig = {
@@ -38,8 +40,8 @@ const importConfig = {
   name: 'Import Config',
   files: ['src/**/*.{js,ts,jsx,tsx}'],
   plugins: {
-    'simple-import-sort': simpleImportSort,
-    'unused-imports': unusedImports,
+    'simple-import-sort': pluginSimpleImportSort,
+    'unused-imports': pluginUnusedImports,
   },
   rules: {
     'no-unused-vars': 'off',
@@ -49,7 +51,7 @@ const importConfig = {
       'error',
       {
         groups: [
-          ['^react', '^react-dom'],
+          ['^react$', '^react-dom(/|$)'],
           ['^node:', '^@?\\w'],
           ['^@/'],
           ['^\\.'],
@@ -86,10 +88,18 @@ const tailwindConfig = {
   },
 };
 
+const a11yConfig = {
+  name: 'A11y Config',
+  files: ['src/**/*.{js,ts,jsx,tsx}'],
+  // プラグイン登録は nextCoreWebVitals に委ね、jsx-a11y/recommended の全32ルールを展開する
+  // （nextCoreWebVitals は6ルールのみ有効化）
+  rules: pluginJsxA11y.flatConfigs.recommended.rules,
+};
+
 const stylisticConfig = {
   name: 'Stylistic Config',
   files: ['src/**/*.{js,ts,jsx,tsx}'],
-  plugins: { '@stylistic': stylistic },
+  plugins: { '@stylistic': pluginStylistic },
   rules: {
     '@stylistic/padding-line-between-statements': [
       'error',
@@ -119,15 +129,17 @@ export default defineConfig([
     },
   },
 
+  js.configs.recommended,
   // Next.js flat config: react / react-hooks / @next/next / import / jsx-a11y をネイティブ配線
   nextCoreWebVitals,
   // typescript-eslint recommended（非 type-checked）＋ Next 独自 tweak・ignores
   nextTs,
-  tseslint.configs.recommendedTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
-  tailwindcss.configs['flat/recommended'],
+  tsEsLint.configs.recommendedTypeChecked,
+  tsEsLint.configs.stylisticTypeChecked,
+  pluginTailwindcss.configs['flat/recommended'],
   typeConfig,
   importConfig,
+  a11yConfig,
   tailwindConfig,
   stylisticConfig,
 
@@ -135,9 +147,9 @@ export default defineConfig([
   // 型チェック系ルールが tsconfig 外の JS ファイルに適用されてエラーになるのを防ぐ。
   // {
   //   files: ['**/*.{js,mjs,cjs}'],
-  //   ...tseslint.configs.disableTypeChecked,
+  //   ...tsEsLint.configs.disableTypeChecked,
   // },
 
   // 整形ルールの競合を解消（必ず最後に置く）
-  prettier,
+  configPrettier,
 ]);
