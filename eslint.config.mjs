@@ -60,6 +60,9 @@ const importConfig = {
       },
     ],
     'simple-import-sort/exports': 'error',
+    // import プラグインは nextCoreWebVitals が 'import' キーで登録済み。
+    // flat config では同キーの二重登録が禁止されるため自前登録は不可。
+    // eslint-config-next が import-x へ移行した際はキー名の変更確認が必要。
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
