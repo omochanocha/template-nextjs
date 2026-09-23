@@ -1,5 +1,7 @@
 This is a Next.js template as of April 2025.
 
+oxlint/oxfmt を導入済みで、コミット時に自動で整形・lint が走る。
+
 ## Getting Started
 
 First, run the development server:

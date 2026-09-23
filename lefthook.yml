@@ -1,13 +1,17 @@
 pre-commit:
-  parallel: true
+  parallel: false
   stage_fixed: true
   commands:
-    lint_ts:
-      glob: 'src/**/*.{js,jsx,ts,tsx}'
-      run: npx prettier --write --log-level=warn {staged_files} && npx eslint --fix --quiet {staged_files}
-    lint_css:
-      glob: 'src/**/*.{css,less,sass,scss}'
-      run: npx stylelint --fix --quiet {staged_files}
-    lint_misc:
-      glob: 'src/**/*.{html,json,gql,graphql}'
-      run: npx prettier --write --log-level=error {staged_files}
+    1_oxfmt:
+      glob: '*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,html,htm,css,scss,sass,less,json,jsonc,yaml,yml,graphql,gql,md,mdx}'
+      exclude:
+        - '{.next,out,node_modules}/*'
+        - '*-lock.{json,yaml,yml}'
+        - '.claude/**'
+      run: npx oxfmt {staged_files}
+    2_oxlint:
+      glob: '*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+      exclude:
+        - '{.next,out,node_modules}/*'
+        - '*.config.*'
+      run: npx oxlint {staged_files} --fix --quiet
