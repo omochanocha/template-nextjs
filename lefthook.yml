@@ -7,6 +7,7 @@ pre-commit:
       exclude:
         - '{.next,out,node_modules}/*'
         - '*-lock.{json,yaml,yml}'
+        - '.claude/**'
       run: npx oxfmt {staged_files}
     2_oxlint:
       glob: '*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
